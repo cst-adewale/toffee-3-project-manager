@@ -15,6 +15,7 @@ import SprintPlanner from './SprintPlanner';
 function Workspace({ user, token, onLogout }) {
   const queryClient = useQueryClient();
   const [error, setError] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const {
     selectedProjectId,
     draggedIssueId,
@@ -191,13 +192,25 @@ function Workspace({ user, token, onLogout }) {
         onSelectProject={setSelectedProjectId}
         onCreateProject={handleCreateProject}
         onLogout={onLogout}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
       />
 
       <section className="workspace">
         <header className="workspace-header">
-          <div>
-            <p className="eyebrow">{selectedProject?.key || 'No project'}</p>
-            <h2>{selectedProject?.name || 'Create a project to start'}</h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button 
+              className="mobile-menu-btn icon-button" 
+              onClick={() => setIsSidebarOpen(true)}
+              type="button"
+              aria-label="Open menu"
+            >
+              ☰
+            </button>
+            <div>
+              <p className="eyebrow">{selectedProject?.key || 'No project'}</p>
+              <h2>{selectedProject?.name || 'Create a project to start'}</h2>
+            </div>
           </div>
           <div className="workspace-actions">
             <div className="view-switch" aria-label="Workspace view">

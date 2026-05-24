@@ -8,6 +8,8 @@ function ProjectSidebar({
   onSelectProject,
   onCreateProject,
   onLogout,
+  isOpen,
+  onClose,
 }) {
   const [projectForm, setProjectForm] = useState({ name: '', key: '' });
 
@@ -24,12 +26,17 @@ function ProjectSidebar({
   };
 
   return (
-    <aside className="sidebar">
-      <div>
-        <p className="eyebrow">Toffee</p>
-        <h1>Workspace</h1>
-        <p className="muted">Signed in as {user.name}</p>
-      </div>
+    <>
+      {isOpen && <div className="sidebar-backdrop" onClick={onClose} />}
+      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <p className="eyebrow">Toffee</p>
+            <h1>Workspace</h1>
+            <p className="muted">Signed in as {user.name}</p>
+          </div>
+          <button className="mobile-close-btn icon-button" onClick={onClose} type="button">×</button>
+        </div>
 
       <form className="panel-form" onSubmit={submitProject}>
         <label>
@@ -69,7 +76,8 @@ function ProjectSidebar({
       </div>
 
       <button className="sign-out" onClick={onLogout} type="button">Sign Out</button>
-    </aside>
+      </aside>
+    </>
   );
 }
 

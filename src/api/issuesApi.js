@@ -53,3 +53,23 @@ export function updateIssueDates(token, issueId, payload) {
     body: JSON.stringify(payload),
   });
 }
+
+export async function uploadIssueAttachment(token, issueId, file) {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`http://localhost:5000/api/issues/${issueId}/attachments`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  const data = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(data?.message || 'Upload failed.');
+  }
+
+  return data;
+}

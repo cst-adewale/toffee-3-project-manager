@@ -6,6 +6,7 @@ import {
   listIssueEvents,
   updateIssueDates,
   updateIssueEstimate,
+  uploadIssueAttachment,
 } from '../../api/issuesApi';
 import { addCommentSchema, updateEstimateSchema, updateIssueDatesSchema } from '../../schemas/issueSchemas';
 
@@ -84,6 +85,21 @@ function IssueDetailPanel({ token, issue, states, onClose, onIssueUpdated, onErr
     onError: (err) => onError(err.message),
   });
 
+  const uploadAttachmentMutation = useMutation({
+    mutationFn: (file) => uploadIssueAttachment(token, issue._id, file),
+    onSuccess: (updatedIssue) => {
+      onIssueUpdated(updatedIssue);
+    },
+    onError: (err) => onError(err.message),
+  });
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      uploadAttachmentMutation.mutate(file);
+    }
+  };
+
   if (!issue) return null;
 
   const submitEstimate = (event) => {
@@ -136,6 +152,24 @@ function IssueDetailPanel({ token, issue, states, onClose, onIssueUpdated, onErr
       <section className="panel-section">
         <h3>Description</h3>
         <p className="description-text">{issue.description || 'No description yet.'}</p>
+      </section>
+
+      <section className="panel-section">
+        <h3>Attachments</h3>
+        <div className="attachments-list">
+          {issue.attachments?.map((att, idx) => (
+            <div key={idx}>
+              <a href={`http://localhost:5000/uploads/${att.filename}`} target="_blank" rel="noreferrer">
+                {att.originalName}
+              </a> ({(att.size / 1024).toFixed(1)} KB)
+            </div>
+          ))}
+          {!issue.attachments?.length && <p>No attachments yet.</p>}
+        </div>
+        <div style={{ marginTop: '0.5rem' }}>
+          <input type="file" onChange={handleFileUpload} disabled={uploadAttachmentMutation.isPending} />
+          {uploadAttachmentMutation.isPending && <span> Uploading...</span>}
+        </div>
       </section>
 
       <form className="panel-section date-form" onSubmit={submitDates}>

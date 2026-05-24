@@ -108,6 +108,13 @@ const issueSchema = new mongoose.Schema({
     ref: 'Issue',
     default: null,
   },
+  attachments: [{
+    filename: String,
+    originalName: String,
+    mimetype: String,
+    size: Number,
+    uploadedAt: { type: Date, default: Date.now },
+  }],
 }, { timestamps: true });
 
 issueSchema.pre('validate', function syncLegacyFields() {

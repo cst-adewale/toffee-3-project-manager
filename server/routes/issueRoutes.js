@@ -22,6 +22,10 @@ import {
   updateEstimate,
 } from '../services/workflowService.js';
 import { addComment } from '../services/commentService.js';
+import multer from 'multer';
+import path from 'path';
+
+const upload = multer({ dest: 'server/uploads/' });
 
 const router = express.Router();
 
@@ -159,6 +163,33 @@ router.get('/:issueId/comments', protect, async (req, res) => {
     .populate('authorId', 'name email');
 
   res.json(comments);
+});
+
+router.post('/:issueId/attachments', protect, upload.single('file'), async (req, res, next) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'No file uploaded' });
+    }
+
+    const issue = await Issue.findById(req.params.issueId);
+    if (!issue) {
+      return res.status(404).json({ message: 'Issue not found' });
+    }
+
+    const attachment = {
+      filename: req.file.filename,
+      originalName: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+    };
+
+    issue.attachments.push(attachment);
+    await issue.save();
+
+    res.status(201).json(issue);
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;
