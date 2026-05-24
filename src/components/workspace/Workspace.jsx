@@ -5,6 +5,7 @@ import { createProject, listProjects } from '../../api/projectsApi';
 import { completeSprint, createSprint, listSprints, startSprint } from '../../api/sprintsApi';
 import { listWorkflowStates, listWorkflowTransitions } from '../../api/workflowsApi';
 import { useWorkspaceStore } from '../../stores/workspaceStore';
+import CalendarView from './CalendarView';
 import IssueBoard from './IssueBoard';
 import IssueComposer from './IssueComposer';
 import IssueDetailPanel from './IssueDetailPanel';
@@ -19,10 +20,14 @@ function Workspace({ user, token, onLogout }) {
     draggedIssueId,
     selectedIssueId,
     selectedSprintId,
+    workspaceView,
+    theme,
     setSelectedProjectId,
     setDraggedIssueId,
     setSelectedIssueId,
     setSelectedSprintId,
+    setWorkspaceView,
+    toggleTheme,
   } = useWorkspaceStore();
 
   const projectsQuery = useQuery({
@@ -85,6 +90,10 @@ function Workspace({ user, token, onLogout }) {
       setSelectedProjectId(projects[0]._id);
     }
   }, [projects, selectedProjectId, setSelectedProjectId]);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
 
   const createProjectMutation = useMutation({
     mutationFn: (payload) => createProject(token, payload),
@@ -190,7 +199,17 @@ function Workspace({ user, token, onLogout }) {
             <p className="eyebrow">{selectedProject?.key || 'No project'}</p>
             <h2>{selectedProject?.name || 'Create a project to start'}</h2>
           </div>
-          <div className="status-pill">{issues.length} issues</div>
+          <div className="workspace-actions">
+            <div className="view-switch" aria-label="Workspace view">
+              <button className={workspaceView === 'board' ? 'active' : ''} onClick={() => setWorkspaceView('board')} type="button">Board</button>
+              <button className={workspaceView === 'planning' ? 'active' : ''} onClick={() => setWorkspaceView('planning')} type="button">Planning</button>
+              <button className={workspaceView === 'calendar' ? 'active' : ''} onClick={() => setWorkspaceView('calendar')} type="button">Calendar</button>
+            </div>
+            <button className="theme-toggle" onClick={toggleTheme} type="button">
+              {theme === 'dark' ? 'Light' : 'Dark'}
+            </button>
+            <div className="status-pill">{issues.length} issues</div>
+          </div>
         </header>
 
         {visibleError && <div className="error-banner">{visibleError}</div>}
@@ -201,32 +220,48 @@ function Workspace({ user, token, onLogout }) {
           onCreateIssue={handleCreateIssue}
         />
 
-        <SprintPlanner
-          projectId={selectedProjectId}
-          sprints={sprints}
-          issues={issues}
-          selectedSprintId={selectedSprintId}
-          onSelectSprint={setSelectedSprintId}
-          onCreateSprint={(payload) => createSprintMutation.mutate(payload)}
-          onAssignIssueSprint={(issueId, sprintId) => assignIssueSprintMutation.mutate({ issueId, sprintId })}
-          onStartSprint={(sprintId) => startSprintMutation.mutate(sprintId)}
-          onCompleteSprint={(sprintId) => completeSprintMutation.mutate(sprintId)}
-          onError={setError}
-        />
+        {workspaceView === 'planning' && (
+          <SprintPlanner
+            projectId={selectedProjectId}
+            sprints={sprints}
+            issues={issues}
+            selectedSprintId={selectedSprintId}
+            onSelectSprint={setSelectedSprintId}
+            onCreateSprint={(payload) => createSprintMutation.mutate(payload)}
+            onAssignIssueSprint={(issueId, sprintId) => assignIssueSprintMutation.mutate({ issueId, sprintId })}
+            onStartSprint={(sprintId) => startSprintMutation.mutate(sprintId)}
+            onCompleteSprint={(sprintId) => completeSprintMutation.mutate(sprintId)}
+            onError={setError}
+          />
+        )}
 
-        <IssueBoard
-          states={states}
-          transitions={transitions}
-          issues={filteredIssues}
-          draggedIssueId={draggedIssueId}
-          onDragStart={setDraggedIssueId}
-          onDragEnd={() => setDraggedIssueId(null)}
-          onInvalidTransition={setError}
-          onSelectIssue={setSelectedIssueId}
-          onTransitionIssue={(issueId, targetStateId) => {
-            transitionIssueMutation.mutate({ issueId, targetStateId });
-          }}
-        />
+        {workspaceView === 'calendar' && (
+          <CalendarView
+            issues={issues}
+            sprints={sprints}
+            onSelectIssue={setSelectedIssueId}
+            onSelectSprint={(sprintId) => {
+              setSelectedSprintId(sprintId);
+              setWorkspaceView('board');
+            }}
+          />
+        )}
+
+        {workspaceView === 'board' && (
+          <IssueBoard
+            states={states}
+            transitions={transitions}
+            issues={filteredIssues}
+            draggedIssueId={draggedIssueId}
+            onDragStart={setDraggedIssueId}
+            onDragEnd={() => setDraggedIssueId(null)}
+            onInvalidTransition={setError}
+            onSelectIssue={setSelectedIssueId}
+            onTransitionIssue={(issueId, targetStateId) => {
+              transitionIssueMutation.mutate({ issueId, targetStateId });
+            }}
+          />
+        )}
       </section>
 
       <IssueDetailPanel

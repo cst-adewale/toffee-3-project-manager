@@ -4,9 +4,10 @@ import {
   addIssueComment,
   listIssueComments,
   listIssueEvents,
+  updateIssueDates,
   updateIssueEstimate,
 } from '../../api/issuesApi';
-import { addCommentSchema, updateEstimateSchema } from '../../schemas/issueSchemas';
+import { addCommentSchema, updateEstimateSchema, updateIssueDatesSchema } from '../../schemas/issueSchemas';
 
 function formatDate(value) {
   if (!value) return 'No date';
@@ -37,6 +38,7 @@ function IssueDetailPanel({ token, issue, states, onClose, onIssueUpdated, onErr
     storyPoints: issue?.storyPoints || 0,
     estimate: issue?.estimate || 0,
   });
+  const [dueDate, setDueDate] = useState(() => issue?.dueDate ? issue.dueDate.slice(0, 10) : '');
 
   const status = useMemo(() => {
     const statusId = issue?.statusId?._id || issue?.statusId;
@@ -74,6 +76,14 @@ function IssueDetailPanel({ token, issue, states, onClose, onIssueUpdated, onErr
     onError: (err) => onError(err.message),
   });
 
+  const updateDatesMutation = useMutation({
+    mutationFn: (payload) => updateIssueDates(token, issue._id, payload),
+    onSuccess: (updatedIssue) => {
+      onIssueUpdated(updatedIssue);
+    },
+    onError: (err) => onError(err.message),
+  });
+
   if (!issue) return null;
 
   const submitEstimate = (event) => {
@@ -96,6 +106,16 @@ function IssueDetailPanel({ token, issue, states, onClose, onIssueUpdated, onErr
     addCommentMutation.mutate(parsed.data.body);
   };
 
+  const submitDates = (event) => {
+    event.preventDefault();
+    const parsed = updateIssueDatesSchema.safeParse({ dueDate: dueDate || null });
+    if (!parsed.success) {
+      onError(parsed.error.issues[0]?.message || 'Invalid date.');
+      return;
+    }
+    updateDatesMutation.mutate(parsed.data);
+  };
+
   return (
     <aside className="issue-panel" aria-label="Issue details">
       <div className="issue-panel-header">
@@ -103,7 +123,7 @@ function IssueDetailPanel({ token, issue, states, onClose, onIssueUpdated, onErr
           <p className="eyebrow">{issue.issueKey}</p>
           <h2>{issue.title}</h2>
         </div>
-        <button className="icon-button" onClick={onClose} type="button" aria-label="Close issue details">×</button>
+        <button className="icon-button" onClick={onClose} type="button" aria-label="Close issue details">x</button>
       </div>
 
       <div className="detail-grid">
@@ -117,6 +137,19 @@ function IssueDetailPanel({ token, issue, states, onClose, onIssueUpdated, onErr
         <h3>Description</h3>
         <p className="description-text">{issue.description || 'No description yet.'}</p>
       </section>
+
+      <form className="panel-section date-form" onSubmit={submitDates}>
+        <h3>Schedule</h3>
+        <label>
+          Due date
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(event) => setDueDate(event.target.value)}
+          />
+        </label>
+        <button type="submit">Save Date</button>
+      </form>
 
       <form className="panel-section estimate-form" onSubmit={submitEstimate}>
         <h3>Estimate</h3>

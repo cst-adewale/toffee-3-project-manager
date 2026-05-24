@@ -559,3 +559,259 @@ textarea {
     border-top: 1px solid #e3e8ef;
   }
 }
+
+.workspace-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.view-switch {
+  display: inline-flex;
+  gap: 4px;
+  border: 1px solid #d7dee8;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 4px;
+}
+
+.view-switch button,
+.theme-toggle {
+  min-height: 32px;
+  border: 0;
+  background: transparent;
+  color: #475467;
+  padding: 0 10px;
+  font-size: 0.82rem;
+}
+
+.view-switch button.active,
+.theme-toggle {
+  background: #1f6f5b;
+  color: #ffffff;
+}
+
+.calendar-view {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid #e3e8ef;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 12px;
+  overflow: hidden;
+}
+
+.calendar-header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.calendar-header h3 {
+  margin: 0;
+  text-align: center;
+  color: #111827;
+  font-size: 1rem;
+}
+
+.calendar-header button {
+  min-height: 32px;
+  border: 1px solid #d7dee8;
+  background: #ffffff;
+  color: #344054;
+  padding: 0 12px;
+  font-size: 0.82rem;
+}
+
+.calendar-weekdays,
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+}
+
+.calendar-weekdays span {
+  color: #667085;
+  font-size: 0.76rem;
+  font-weight: 800;
+  padding: 0 8px 6px;
+  text-transform: uppercase;
+}
+
+.calendar-grid {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  border-top: 1px solid #e3e8ef;
+  border-left: 1px solid #e3e8ef;
+}
+
+.calendar-day {
+  min-height: 112px;
+  border-right: 1px solid #e3e8ef;
+  border-bottom: 1px solid #e3e8ef;
+  background: #ffffff;
+  padding: 8px;
+}
+
+.muted-day {
+  background: #f8fafc;
+}
+
+.calendar-day-number {
+  color: #475467;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.calendar-items {
+  display: grid;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.calendar-item {
+  display: block;
+  min-height: 26px;
+  overflow: hidden;
+  border-radius: 6px;
+  padding: 0 8px;
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.76rem;
+}
+
+.issue-date {
+  background: #e9f5f1;
+  color: #123f34;
+}
+
+.sprint-date {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.date-form {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+}
+
+.date-form h3 {
+  grid-column: 1 / -1;
+}
+
+.date-form label {
+  display: grid;
+  gap: 6px;
+  color: #344054;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+:root[data-theme='dark'] body {
+  background: #0f172a;
+}
+
+:root[data-theme='dark'] .app-shell {
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+:root[data-theme='dark'] .sidebar,
+:root[data-theme='dark'] .issue-composer,
+:root[data-theme='dark'] .sprint-planner,
+:root[data-theme='dark'] .planning-lane,
+:root[data-theme='dark'] .planning-item,
+:root[data-theme='dark'] .sprint-item,
+:root[data-theme='dark'] .board-column,
+:root[data-theme='dark'] .issue-card,
+:root[data-theme='dark'] .issue-panel,
+:root[data-theme='dark'] .detail-grid,
+:root[data-theme='dark'] .comment-item,
+:root[data-theme='dark'] .event-item,
+:root[data-theme='dark'] .calendar-view,
+:root[data-theme='dark'] .calendar-day,
+:root[data-theme='dark'] .view-switch {
+  border-color: #334155;
+  background: #111827;
+}
+
+:root[data-theme='dark'] .muted-day {
+  background: #0f172a;
+}
+
+:root[data-theme='dark'] input,
+:root[data-theme='dark'] select,
+:root[data-theme='dark'] textarea,
+:root[data-theme='dark'] .calendar-header button,
+:root[data-theme='dark'] .sprint-actions button,
+:root[data-theme='dark'] .icon-button {
+  border-color: #334155;
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+:root[data-theme='dark'] .sidebar h1,
+:root[data-theme='dark'] .workspace-header h2,
+:root[data-theme='dark'] .planner-header h3,
+:root[data-theme='dark'] .column-header h3,
+:root[data-theme='dark'] .issue-card h4,
+:root[data-theme='dark'] .issue-panel-header h2,
+:root[data-theme='dark'] .panel-section h3,
+:root[data-theme='dark'] .calendar-header h3,
+:root[data-theme='dark'] .planning-item strong,
+:root[data-theme='dark'] .sprint-item strong,
+:root[data-theme='dark'] .detail-grid strong {
+  color: #f8fafc;
+}
+
+:root[data-theme='dark'] .eyebrow,
+:root[data-theme='dark'] .muted,
+:root[data-theme='dark'] .issue-meta,
+:root[data-theme='dark'] .issue-footer,
+:root[data-theme='dark'] .planning-lane-header span,
+:root[data-theme='dark'] .sprint-stats span,
+:root[data-theme='dark'] .calendar-weekdays span,
+:root[data-theme='dark'] .calendar-day-number,
+:root[data-theme='dark'] .comment-item time,
+:root[data-theme='dark'] .event-item time,
+:root[data-theme='dark'] .view-switch button {
+  color: #94a3b8;
+}
+
+:root[data-theme='dark'] .description-text,
+:root[data-theme='dark'] .comment-item p,
+:root[data-theme='dark'] .event-item span,
+:root[data-theme='dark'] .detail-grid,
+:root[data-theme='dark'] .date-form label,
+:root[data-theme='dark'] .estimate-form label,
+:root[data-theme='dark'] .panel-form label {
+  color: #cbd5e1;
+}
+
+:root[data-theme='dark'] .project-list button {
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+:root[data-theme='dark'] .project-list button.active,
+:root[data-theme='dark'] .issue-date {
+  background: #123f34;
+  color: #d1fae5;
+}
+
+:root[data-theme='dark'] .sprint-date {
+  background: #312e81;
+  color: #e0e7ff;
+}
+
+:root[data-theme='dark'] .calendar-grid,
+:root[data-theme='dark'] .calendar-day {
+  border-color: #334155;
+}

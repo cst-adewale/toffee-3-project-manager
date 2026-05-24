@@ -38,6 +38,10 @@ export const updateEstimateSchema = z.object({
   message: 'Estimate or story points are required.',
 });
 
+export const updateIssueDatesSchema = z.object({
+  dueDate: z.string().nullable(),
+});
+
 export const addCommentSchema = z.object({
   body: z.string().trim().min(1, 'Comment body is required.'),
 });

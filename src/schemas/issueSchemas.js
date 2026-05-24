@@ -20,6 +20,10 @@ export const updateEstimateSchema = z.object({
   estimate: z.coerce.number().min(0, 'Estimate cannot be negative.'),
 });
 
+export const updateIssueDatesSchema = z.object({
+  dueDate: z.string().nullable(),
+});
+
 export const addCommentSchema = z.object({
   body: z.string().trim().min(1, 'Comment cannot be empty.'),
 });

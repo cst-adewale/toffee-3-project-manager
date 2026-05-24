@@ -46,3 +46,10 @@ export function assignIssueSprint(token, issueId, sprintId) {
     body: JSON.stringify({ sprintId }),
   });
 }
+
+export function updateIssueDates(token, issueId, payload) {
+  return apiRequest(`/issues/${issueId}/dates`, token, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}

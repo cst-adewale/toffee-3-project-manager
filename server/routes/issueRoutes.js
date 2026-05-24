@@ -12,6 +12,7 @@ import {
   assignIssueSprintSchema,
   createIssueSchema,
   transitionIssueSchema,
+  updateIssueDatesSchema,
   updateEstimateSchema,
 } from '../schemas/issueSchemas.js';
 import {
@@ -110,6 +111,20 @@ router.patch('/:issueId/sprint', protect, validateBody(assignIssueSprintSchema),
     const issue = await Issue.findByIdAndUpdate(
       req.params.issueId,
       { sprintId: req.body.sprintId },
+      { new: true },
+    );
+
+    res.json(issue);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/:issueId/dates', protect, validateBody(updateIssueDatesSchema), async (req, res, next) => {
+  try {
+    const issue = await Issue.findByIdAndUpdate(
+      req.params.issueId,
+      { dueDate: req.body.dueDate || null },
       { new: true },
     );
 
