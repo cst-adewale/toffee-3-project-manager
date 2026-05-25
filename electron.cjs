@@ -62,9 +62,14 @@ function registerWorkflowIpc() {
 }
 
 function createWindow() {
+  const iconPath = process.env.NODE_ENV === 'development'
+    ? path.join(__dirname, 'public', 'icon.png')
+    : path.join(__dirname, 'dist', 'icon.png');
+
   const mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
+    icon: iconPath,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
